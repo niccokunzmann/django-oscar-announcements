@@ -34,4 +34,15 @@
         startField.addEventListener("change", updateStartLabel);
         updateStartLabel();
     }
+
+    // TinyMCE 6+ no longer syncs editor content to the textarea automatically
+    // on form submit, so we trigger it explicitly here.
+    var form = document.getElementById("announcement-form");
+    if (form) {
+        form.addEventListener("submit", function () {
+            if (typeof tinymce !== "undefined") {
+                tinymce.triggerSave();
+            }
+        });
+    }
 }());

@@ -38,7 +38,7 @@
     <tbody>
         {% for ann in announcements %}
         <tr>
-            <td>{{ ann.content|truncatechars:80 }}</td>
+            <td>{{ ann.content|striptags|truncatechars:80 }}</td>
             <td>
                 <span class="badge {% if ann.level == 'info' %}bg-info{% else %}bg-warning text-dark{% endif %}">
                     {{ ann.get_level_display }}

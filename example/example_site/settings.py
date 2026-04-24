@@ -14,10 +14,12 @@ _apps[_apps.index("oscar.apps.dashboard.apps.DashboardConfig")] = (
     "example_site.apps.DashboardConfig"
 )
 
-INSTALLED_APPS = _apps + [
+# oscar_announcements must precede oscar.config.Shop so its
+# oscar/dashboard/partials/alert_messages.html override is found first.
+INSTALLED_APPS = [
     "pinax.announcements",
     "oscar_announcements",
-    "background_task",
+    *_apps,
 ]
 
 SITE_ID = 1

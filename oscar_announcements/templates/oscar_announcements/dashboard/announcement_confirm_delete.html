@@ -24,7 +24,7 @@
         This action cannot be undone.
     {% endblocktrans %}
 </div>
-<blockquote class="blockquote">{{ object.content }}</blockquote>
+<blockquote class="blockquote">{{ object.content|safe }}</blockquote>
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">
