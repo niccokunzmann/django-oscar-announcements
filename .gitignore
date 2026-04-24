@@ -12,3 +12,4 @@ example/db.sqlite3
 example/public/
 
 *.sqlite3
+/.prompts/

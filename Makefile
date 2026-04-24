@@ -9,6 +9,7 @@ PYTEST := $(VENV)/bin/pytest
 	python3 -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -e .[dev]
+	$(VENV)/bin/pre-commit install
 
 ## test: run the package test suite
 test: .venv
