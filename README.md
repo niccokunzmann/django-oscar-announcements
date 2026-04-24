@@ -122,12 +122,6 @@ Add the CSS (only needed on non-Bootstrap pages; Oscar dashboard gets colours fr
 
 ---
 
-## Running background tasks
-
-Background tasks delete the announcements that have expired.
-
-See [Running Tasks](django-background-tasks)(https://django-background-tasks.readthedocs.io/en/latest/#running-tasks).
-
 ## Extending visibility
 
 Register custom audience handlers in your app's `AppConfig.ready()`:
@@ -191,3 +185,13 @@ make run # runs the example
 ```
 
 ---
+
+### Releases
+
+Edit `CHANGES.md`.
+Tag and push:
+
+```bash
+git tag v0.0.1
+git push --follow-tags
+```
