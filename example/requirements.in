@@ -1,0 +1,4 @@
+django-oscar[sorl-thumbnail]
+django-tables2
+django-haystack
+-e ..

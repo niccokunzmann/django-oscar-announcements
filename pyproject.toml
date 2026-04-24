@@ -15,6 +15,29 @@ dependencies = [
     "django-background-tasks",
 ]
 
+classifiers = [
+    # https://pypi.org/classifiers/
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Documentation = "https://github.com/niccokunzmann/django-oscar-announcements"
+Repository = "https://github.com/niccokunzmann/django-oscar-announcements"
+Changelog = "https://github.com/niccokunzmann/django-oscar-announcements/blob/main/CHANGES.md"
+
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["oscar_announcements*"]

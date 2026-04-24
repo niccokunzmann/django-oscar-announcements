@@ -6,10 +6,9 @@ PYTEST := $(VENV)/bin/pytest
 .PHONY: test clean
 
 .venv:
-	python3 -m venv $(VENV)
+	python3 -m venv $(VENV) --upgrade
 	$(PIP) install --upgrade pip
-	$(PIP) install --upgrade setuptools
-	$(PIP) install --upgrade distribute
+	$(PIP) install --upgrade "setuptools<82"
 	$(PIP) install -e .[dev]
 	$(VENV)/bin/pre-commit install
 

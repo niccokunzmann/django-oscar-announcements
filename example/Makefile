@@ -1,13 +1,15 @@
 VENV   := .venv
+BIN	    := $(VENV)/bin
 PYTHON := $(VENV)/bin/python
 PIP    := $(VENV)/bin/pip
 MANAGE := $(PYTHON) manage.py
 
-.PHONY: run superuser test clean
+.PHONY: run superuser test clean compile
 
 .venv:
 	python3 -m venv $(VENV)
 	$(PIP) install --upgrade pip
+	$(PIP) install --upgrade "setuptools<82"
 	$(PIP) install -r requirements.txt
 	$(MANAGE) migrate
 	$(MANAGE) loaddata fixtures/initial.json 2>/dev/null || true
@@ -29,3 +31,7 @@ clean:
 	rm -rf $(VENV) db.sqlite3
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -name "*.pyc" -delete 2>/dev/null || true
+
+compile:
+	$(PIP) install pip-tools
+	$(BIN)/pip-compile --output-file requirements.txt requirements.in

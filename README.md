@@ -12,6 +12,8 @@ Features:
 * **Re-send** checkbox — clear dismissals so users see it again after an edit
 * Auto-delete via [django-background-tasks](https://github.com/arteria/django-background-tasks) when an expiry date passes
 
+![](img/create-announcement.png)
+
 ---
 
 ## Installation
@@ -140,16 +142,6 @@ The new option then appears automatically in the dashboard form's *Audience* dro
 
 ---
 
-## Running tests
-
-```bash
-cd django-oscar-announcements
-pip install -e ".[test]"
-pytest
-```
-
----
-
 ## Template tags reference
 
 ```
@@ -164,3 +156,30 @@ pytest
     <p class="oa-announcement--{{ ann.level }}">{{ ann.content }}</p>
 {% endfor %}
 ```
+
+## Development
+
+Setup:
+
+```bash
+git clone https://github.com/niccokunzmann/django-oscar-announcements
+cd django-oscar-announcements
+make dev
+```
+
+Run tests:
+
+```bash
+make test
+```
+
+Run the example:
+
+```bash
+cd example
+make superuser # creates a superuser
+make test # runs the tests
+make run # runs the example
+```
+
+---
