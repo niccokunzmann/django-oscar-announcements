@@ -13,6 +13,7 @@ Features:
 * Auto-delete via [django-background-tasks](https://github.com/arteria/django-background-tasks) when an expiry date passes
 
 ![](img/create-announcement.png)
+![](img/new-announcement.png)
 
 ---
 
