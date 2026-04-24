@@ -1,5 +1,5 @@
 import os
-from oscar import OSCAR_MAIN_TEMPLATE_DIR, get_core_apps
+import oscar
 from oscar.defaults import *  # noqa: F401,F403
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,22 +8,13 @@ SECRET_KEY = "example-insecure-key-do-not-use-in-production"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django.contrib.sites",
-    "django.contrib.flatpages",
-    "oscar.config.Shop",
-    *get_core_apps(["example_site.apps.DashboardConfig"]),
-    "widget_tweaks",
-    "haystack",
-    "treebeard",
-    "sorl.thumbnail",
-    "django_tables2",
+# Replace oscar's built-in dashboard with our customised version
+_apps = list(oscar.INSTALLED_APPS)
+_apps[_apps.index("oscar.apps.dashboard.apps.DashboardConfig")] = (
+    "example_site.apps.DashboardConfig"
+)
+
+INSTALLED_APPS = _apps + [
     "pinax.announcements",
     "oscar_announcements",
     "background_task",
@@ -49,7 +40,6 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "example_site", "templates"),
-            OSCAR_MAIN_TEMPLATE_DIR,
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -88,7 +78,6 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 
-# Oscar
 OSCAR_DEFAULT_CURRENCY = "GBP"
 
 import copy  # noqa: E402
@@ -100,4 +89,3 @@ OSCAR_DASHBOARD_NAVIGATION[3]["children"].append(
 )
 
 # To add a "verified" audience, register it in example_site/apps.py DashboardConfig.ready()
-

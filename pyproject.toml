@@ -25,6 +25,7 @@ dev = [
     "pytest-django",
     "pytest-mock",
     "pre-commit",
+    "pkg_resources",
 ]
 
 [tool.setuptools.package-data]
