@@ -52,6 +52,17 @@ class Announcement(PinaxAnnouncement):
         super().save(*args, **kwargs)
 
     @classmethod
+    def delete_expired_announcements(cls):
+        """Delete every announcement whose publish_end is in the past.
+
+        Returns the Django ``QuerySet.delete()`` result tuple ``(count, detail)``.
+        """
+        return cls.objects.filter(
+            publish_end__isnull=False,
+            publish_end__lt=timezone.now(),
+        ).delete()
+
+    @classmethod
     def active_for_user(cls, user, *, excluded_pks=()):
         """Return queryset of announcements visible to *user* that are not dismissed.
 

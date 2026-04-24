@@ -12,7 +12,6 @@ license = { text = "MIT" }
 dependencies = [
     "django-oscar",
     "pinax-announcements>=4.0",
-    "django-background-tasks",
 ]
 
 classifiers = [

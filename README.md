@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     ...
     "pinax.announcements",   # required dependency
     "oscar_announcements",
+    'background_task',
     ...
 ]
 ```
@@ -120,6 +121,12 @@ Add the CSS (only needed on non-Bootstrap pages; Oscar dashboard gets colours fr
 ```
 
 ---
+
+## Running background tasks
+
+Background tasks delete the announcements that have expired.
+
+See [Running Tasks](django-background-tasks)(https://django-background-tasks.readthedocs.io/en/latest/#running-tasks).
 
 ## Extending visibility
 

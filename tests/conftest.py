@@ -23,7 +23,6 @@ def pytest_configure():
                 "django.contrib.messages",
                 "pinax.announcements",
                 "oscar_announcements",
-                "background_task",
             ],
             DEFAULT_AUTO_FIELD="django.db.models.AutoField",
             USE_TZ=True,
