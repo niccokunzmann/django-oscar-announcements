@@ -3,7 +3,7 @@ PYTHON := $(VENV)/bin/python
 PIP    := $(VENV)/bin/pip
 MANAGE := $(PYTHON) manage.py
 
-.PHONY: run superuser clean
+.PHONY: run superuser test clean
 
 .venv:
 	python3 -m venv $(VENV)
@@ -21,6 +21,9 @@ run: .venv
 
 superuser: .venv
 	$(MANAGE) createsuperuser
+
+test: .venv
+	$(MANAGE) check
 
 clean:
 	rm -rf $(VENV) db.sqlite3
