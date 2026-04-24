@@ -1,0 +1,62 @@
+/*
+ * Announcement banner styles.
+ *
+ * When Oscar/Bootstrap is available the `.alert-info` / `.alert-danger`
+ * classes already provide correct colours.  The rules below add the layout
+ * and close-button positioning that Bootstrap alone does not supply, and act
+ * as a full fallback on non-Bootstrap pages.
+ */
+
+/* ── Container ── */
+.oa-announcements {
+    width: 100%;
+}
+
+/* ── Single announcement ── */
+.oa-announcement {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .75rem 1rem;
+    margin-bottom: .5rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+/* Fallback colours (used when Bootstrap is not loaded) */
+.oa-announcement--info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.oa-announcement--warning {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* ── Message text ── */
+.oa-announcement__content {
+    flex: 1;
+}
+
+/* ── Dismiss form / close button ── */
+.oa-announcement__dismiss-form {
+    flex-shrink: 0;
+}
+
+.oa-announcement__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    opacity: .6;
+    padding: 0;
+}
+
+.oa-announcement__close:hover {
+    opacity: 1;
+}

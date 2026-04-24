@@ -1,0 +1,37 @@
+{% extends "oscar/dashboard/layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Announcement" %} | {{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:announcement-list' %}">{% trans "Announcements" %}</a></li>
+        <li class="breadcrumb-item active">{% trans "Delete" %}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block header %}
+<div class="page-header"><h1>{% trans "Delete Announcement" %}</h1></div>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="alert alert-warning">
+    {% blocktrans trimmed %}
+        Are you sure you want to delete this announcement?
+        This action cannot be undone.
+    {% endblocktrans %}
+</div>
+<blockquote class="blockquote">{{ object.content }}</blockquote>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i> {% trans "Yes, delete" %}
+    </button>
+    <a href="{% url 'dashboard:announcement-list' %}" class="btn btn-secondary ms-2">
+        {% trans "Cancel" %}
+    </a>
+</form>
+{% endblock %}

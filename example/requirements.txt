@@ -1,0 +1,7 @@
+django-oscar[sorl-thumbnail]
+pinax-announcements
+django-background-tasks
+django-tables2
+treebeard
+django-haystack
+-e ..

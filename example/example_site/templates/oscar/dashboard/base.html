@@ -1,0 +1,13 @@
+{% extends "oscar/dashboard/base.html" %}
+{% load static oscar_announcements_tags %}
+
+{% block extrastyles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'oscar_announcements/css/announcements.css' %}">
+{% endblock %}
+
+{% block extrascripts %}
+    {% render_announcements %}
+    <script src="{% static 'oscar_announcements/js/announcements.js' %}"></script>
+    {{ block.super }}
+{% endblock %}

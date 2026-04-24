@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-oscar-announcements"
+version = "0.1.0"
+description = "Pinax Announcements integration for Django Oscar dashboards"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "django-oscar",
+    "pinax-announcements>=4.0",
+    "django-background-tasks",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["oscar_announcements*"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-django",
+    "pytest-mock",
+    "pre-commit",
+]
+
+[tool.setuptools.package-data]
+oscar_announcements = [
+    "templates/**/*.html",
+    "static/**/*.js",
+    "static/**/*.css",
+]

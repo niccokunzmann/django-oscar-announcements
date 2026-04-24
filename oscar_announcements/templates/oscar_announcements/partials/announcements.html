@@ -1,0 +1,25 @@
+{% load i18n %}
+{% if site_announcements %}
+{% for ann in site_announcements %}
+<div class="oa-announcement alert alert-{% if ann.level == 'info' %}info{% else %}warning{% endif %} alert-dismissible fade show"
+     role="alert"
+     id="oa-ann-{{ ann.pk }}">
+    <div class="alertinner wicon">
+        {% if ann.level == 'info' %}
+            <i class="fas fa-info-circle"></i>
+        {% else %}
+            <i class="fas fa-exclamation-triangle"></i>
+        {% endif %}
+        <div class="oa-announcement__content">{{ ann.content|safe }}</div>
+    </div>
+    {% if ann.dismiss_url %}
+    <form method="post" action="{{ ann.dismiss_url }}" class="oa-announcement__dismiss-form d-inline">
+        {% csrf_token %}
+        <button type="submit" class="close" aria-label="{% trans 'Dismiss' %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endfor %}
+{% endif %}
