@@ -2,10 +2,10 @@
 
 Host applications extend this by calling ``register()`` in their ``AppConfig.ready()``.
 
-Example (adding a "verified" audience)::
+Example (adding a "member" audience)::
 
     from oscar_announcements.visibility import register
-    register("verified", _("Verified users"), lambda user: getattr(user, "is_verified", False))
+    register("member", _("Members"), lambda user: getattr(user, "is_member", False))
 """
 
 from typing import Callable
@@ -21,6 +21,19 @@ def register(name: str, label: str, handler: Callable) -> None:
     :param handler: ``(user) -> bool`` — returns True when *user* is eligible.
     """
     _REGISTRY[name] = (label, handler)
+
+
+def unregister(name: str) -> None:
+    """Remove a visibility level by name.
+
+    Raises ``KeyError`` if *name* is not registered.
+    """
+    del _REGISTRY[name]
+
+
+def unregister_all() -> None:
+    """Remove all registered visibility levels."""
+    _REGISTRY.clear()
 
 
 def get_choices() -> list[tuple[str, str]]:

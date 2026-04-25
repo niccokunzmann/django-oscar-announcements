@@ -16,6 +16,7 @@ User = get_user_model()
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
+
 def _mock_user(authenticated=True, is_staff=False, is_superuser=False, **attrs):
     u = MagicMock()
     u.is_authenticated = authenticated
@@ -28,7 +29,9 @@ def _mock_user(authenticated=True, is_staff=False, is_superuser=False, **attrs):
 
 
 def _make(creator, **kwargs):
-    defaults = dict(content="Test announcement", visibility="registered", level=Announcement.INFO)
+    defaults = dict(
+        content="Test announcement", visibility="registered", level=Announcement.INFO
+    )
     defaults.update(kwargs)
     ann = Announcement(creator=creator, **defaults)
     ann.save()
@@ -37,9 +40,11 @@ def _make(creator, **kwargs):
 
 # ── Fixtures ─────────────────────────────────────────────────────────────────
 
+
 @pytest.fixture(autouse=True)
 def _registry():
     vis_module._REGISTRY.clear()
+    vis_module.register("everyone", "Everyone", lambda u: True)
     vis_module.register("registered", "Registered", lambda u: u.is_authenticated)
     vis_module.register("staff", "Staff only", lambda u: u.is_staff or u.is_superuser)
     yield
@@ -53,6 +58,7 @@ def admin_user(db):
 
 
 # ── Visibility registry tests ─────────────────────────────────────────────────
+
 
 class TestVisibilityRegistry:
     def test_get_choices(self):
@@ -71,25 +77,66 @@ class TestVisibilityRegistry:
         assert "registered" in visible
         assert "staff" in visible
 
-    def test_anonymous_sees_nothing(self):
+    def test_anonymous_sees_everyone(self):
         user = _mock_user(authenticated=False, is_staff=False)
-        assert vis_module.get_visible_visibilities(user) == []
+        visible = vis_module.get_visible_visibilities(user)
+        assert "everyone" in visible
+        assert "registered" not in visible
+        assert "staff" not in visible
 
     def test_extension_with_custom_level(self):
-        vis_module.register("verified", "Verified", lambda u: getattr(u, "is_verified", False))
-        user = _mock_user(authenticated=True, is_staff=False, is_verified=True)
-        assert "verified" in vis_module.get_visible_visibilities(user)
-        user2 = _mock_user(authenticated=True, is_staff=False, is_verified=False)
-        assert "verified" not in vis_module.get_visible_visibilities(user2)
+        vis_module.register(
+            "member", "Members", lambda u: getattr(u, "is_member", False)
+        )
+        user = _mock_user(authenticated=True, is_staff=False, is_member=True)
+        assert "member" in vis_module.get_visible_visibilities(user)
+        user2 = _mock_user(authenticated=True, is_staff=False, is_member=False)
+        assert "member" not in vis_module.get_visible_visibilities(user2)
+
+    def test_unregister_removes_level(self):
+        vis_module.register("temp", "Temp", lambda u: True)
+        assert "temp" in dict(vis_module.get_choices())
+        vis_module.unregister("temp")
+        assert "temp" not in dict(vis_module.get_choices())
+
+    def test_unregister_unknown_raises_key_error(self):
+        import pytest
+
+        with pytest.raises(KeyError):
+            vis_module.unregister("nonexistent")
+
+    def test_unregister_all_clears_registry(self):
+        vis_module.unregister_all()
+        assert vis_module.get_choices() == []
+        assert vis_module.get_visible_visibilities(_mock_user()) == []
 
 
 # ── active_for_user tests ─────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 class TestActiveForUser:
-    def test_anonymous_gets_empty_queryset(self):
+    def test_anonymous_sees_everyone_announcement(self, admin_user):
+        ann = _make(admin_user, visibility="everyone")
         user = _mock_user(authenticated=False)
-        assert Announcement.active_for_user(user).count() == 0
+        assert ann in list(Announcement.active_for_user(user))
+
+    def test_anonymous_cannot_see_registered_announcement(self, admin_user):
+        ann = _make(admin_user, visibility="registered")
+        user = _mock_user(authenticated=False)
+        assert ann not in list(Announcement.active_for_user(user))
+
+    def test_anonymous_excluded_pks_respected(self, admin_user):
+        ann = _make(admin_user, visibility="everyone")
+        user = _mock_user(authenticated=False)
+        assert ann not in list(
+            Announcement.active_for_user(user, excluded_pks=[ann.pk])
+        )
+
+    def test_authenticated_sees_everyone_announcement(self, admin_user):
+        ann = _make(admin_user, visibility="everyone")
+        user = _mock_user(authenticated=True, is_staff=False)
+        assert ann in list(Announcement.active_for_user(user))
 
     def test_registered_user_sees_registered_announcement(self, admin_user):
         ann = _make(admin_user, visibility="registered")
@@ -121,7 +168,9 @@ class TestActiveForUser:
     def test_excluded_pks_skipped(self, admin_user):
         ann = _make(admin_user)
         user = _mock_user(authenticated=True, is_staff=False)
-        assert ann not in list(Announcement.active_for_user(user, excluded_pks=[ann.pk]))
+        assert ann not in list(
+            Announcement.active_for_user(user, excluded_pks=[ann.pk])
+        )
 
     def test_dismissed_announcement_not_shown(self, admin_user):
         ann = _make(admin_user)
@@ -131,6 +180,7 @@ class TestActiveForUser:
 
 
 # ── Model.save() defaults ─────────────────────────────────────────────────────
+
 
 @pytest.mark.django_db
 class TestAnnouncementSaveDefaults:

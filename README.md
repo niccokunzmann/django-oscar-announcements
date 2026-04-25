@@ -6,7 +6,7 @@ Features:
 
 * Dashboard CRUD (Customers → Announcements)
 * **Info** (blue) and **Warning** (red) levels that match Oscar/Bootstrap alert colours
-* Extensible **visibility** — built-in *Registered* and *Staff* audiences; add your own (e.g. *Verified*)
+* Extensible **visibility** — built-in *Everyone*, *Registered*, and *Staff* audiences; add your own (e.g. *Verified*)
 * AJAX dismiss with **no-JS form fallback**
 * **Preview** — set audience to *Creator only* to see it on the public site before publishing to everyone
 * **Re-send** checkbox — clear dismissals so users see it again after an edit
@@ -162,11 +162,22 @@ Add the CSS if your site does not use Bootstrap:
 
 ---
 
+### Anonymous visitors
+
+**Purpose:** Show an announcement to every visitor — logged in or not.
+
+Set *Audience* to **Everyone (including anonymous visitors)** in the dashboard
+form.  Anonymous users see these announcements; authenticated users see them too.
+
+Dismissals for anonymous users are stored in the session (no account required).
+If the visitor later logs in, the announcement is automatically dismissed.
+
+---
+
 ### Custom visibility audiences
 
 **Purpose:** Restrict or extend who can see an announcement beyond the built-in
-*Registered* and *Staff* options — for example, users who have verified their
-email address.
+*Registered* and *Staff* options — for example, paying members.
 
 Register a handler in your app's `AppConfig.ready()`:
 
@@ -178,9 +189,9 @@ from django.utils.translation import gettext_lazy as _
 class MyAppConfig(AppConfig):
     def ready(self):
         register(
-            "verified",                          # stored value
-            _("Verified users"),                 # label shown in the dashboard
-            lambda user: getattr(user, "is_verified", False) or user.is_staff,
+            "member",                            # stored value
+            _("Members"),                        # label shown in the dashboard
+            lambda user: getattr(user, "is_member", False) or user.is_staff,
         )
 ```
 

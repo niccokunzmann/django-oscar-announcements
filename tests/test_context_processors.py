@@ -14,6 +14,7 @@ User = get_user_model()
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 def _mock_request(user, session=None):
     req = MagicMock()
     req.user = user
@@ -32,9 +33,11 @@ def _mock_user(authenticated=True, is_staff=False, is_superuser=False):
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
+
 @pytest.fixture(autouse=True)
 def _registry():
     vis_module._REGISTRY.clear()
+    vis_module.register("everyone", "Everyone", lambda u: True)
     vis_module.register("registered", "Registered", lambda u: u.is_authenticated)
     vis_module.register("staff", "Staff only", lambda u: u.is_staff)
     vis_module.register("creator", "Creator only (preview)", lambda u: False)
@@ -44,12 +47,13 @@ def _registry():
 
 # ── Tests ─────────────────────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 class TestAnnouncementsContextProcessor:
-    def test_anonymous_returns_empty(self):
+    def test_anonymous_gets_site_announcements_key(self):
         req = _mock_request(_mock_user(authenticated=False))
         result = announcements(req)
-        assert result == {}
+        assert "site_announcements" in result
 
     def test_authenticated_user_gets_key(self):
         req = _mock_request(_mock_user(authenticated=True, is_staff=False))
@@ -59,8 +63,12 @@ class TestAnnouncementsContextProcessor:
         assert "site_announcements" in result
 
     def test_creator_visibility_shown_to_creator(self, db):
-        creator, _ = User.objects.get_or_create(username="cp_creator", defaults={"is_staff": True})
-        ann = Announcement(content="Creator preview", visibility="creator", creator=creator)
+        creator, _ = User.objects.get_or_create(
+            username="cp_creator", defaults={"is_staff": True}
+        )
+        ann = Announcement(
+            content="Creator preview", visibility="creator", creator=creator
+        )
         ann.save()
 
         req = _mock_request(creator)
@@ -68,11 +76,17 @@ class TestAnnouncementsContextProcessor:
         assert ann in result["site_announcements"]
 
     def test_creator_visibility_not_shown_to_others(self, db):
-        creator, _ = User.objects.get_or_create(username="cp_creator2", defaults={"is_staff": True})
-        ann = Announcement(content="Creator preview 2", visibility="creator", creator=creator)
+        creator, _ = User.objects.get_or_create(
+            username="cp_creator2", defaults={"is_staff": True}
+        )
+        ann = Announcement(
+            content="Creator preview 2", visibility="creator", creator=creator
+        )
         ann.save()
 
-        other, _ = User.objects.get_or_create(username="cp_other", defaults={"is_staff": True})
+        other, _ = User.objects.get_or_create(
+            username="cp_other", defaults={"is_staff": True}
+        )
         req = _mock_request(other)
         result = announcements(req)
         assert ann not in result.get("site_announcements", [])

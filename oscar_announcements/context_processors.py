@@ -8,9 +8,6 @@ def announcements(request):
     """
     from .models import Announcement
 
-    if not request.user.is_authenticated:
-        return {}
-
     excluded = set(request.session.get("excluded_announcements", []))
     return {
         "site_announcements": list(

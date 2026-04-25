@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.0
+
+- **Anonymous visitors can now see announcements.**
+  A new built-in audience *Everyone (including anonymous visitors)* targets all
+  users regardless of login status.  Dismissals for anonymous users are stored
+  in the session.  When the visitor logs in via Oscar, session dismissals are
+  automatically promoted to permanent DB records via Oscar's `user_logged_in`
+  signal — no manual integration required.
+
 ## v0.1.0
 
 - **Announcements appear in Oscar's messages div automatically — on both the

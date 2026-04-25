@@ -3,13 +3,11 @@
 Include with a namespace::
 
     path("announcements/", include("oscar_announcements.urls", namespace="oscar_announcements")),
-
-The dismiss view is pinax's built-in ``AnnouncementDismissView`` which handles
-both AJAX (returns JSON) and plain-form POST (returns empty 200).
 """
 
 from django.urls import re_path
-from pinax.announcements.views import AnnouncementDismissView
+
+from .views import AnnouncementDismissView
 
 app_name = "oscar_announcements"
 

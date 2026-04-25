@@ -90,4 +90,4 @@ OSCAR_DASHBOARD_NAVIGATION[3]["children"].append(
     {"label": "Announcements", "url_name": "dashboard:announcement-list"}
 )
 
-# To add a "verified" audience, register it in example_site/apps.py DashboardConfig.ready()
+# To add a "member" audience, register it in example_site/apps.py DashboardConfig.ready()

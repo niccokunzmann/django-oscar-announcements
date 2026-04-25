@@ -66,25 +66,28 @@ class Announcement(PinaxAnnouncement):
     def active_for_user(cls, user, *, excluded_pks=()):
         """Return queryset of announcements visible to *user* that are not dismissed.
 
-        ``excluded_pks`` — primary keys already dismissed via session (session
-        dismissal from pinax is merged here).
+        ``excluded_pks`` — primary keys already dismissed via session; used for
+        both authenticated users (merged with DB dismissals) and anonymous users
+        (session is the only dismissal mechanism available).
+
+        Anonymous users see announcements with ``visibility="everyone"`` only.
         """
         from .visibility import get_visible_visibilities
 
+        now = timezone.now()
+        base_qs = (
+            cls.objects.filter(publish_start__lte=now)
+            .filter(Q(publish_end__isnull=True) | Q(publish_end__gt=now))
+            .exclude(pk__in=excluded_pks)
+        )
+
         if not user.is_authenticated:
-            return cls.objects.none()
+            return base_qs.filter(visibility="everyone")
 
         visible = get_visible_visibilities(user)
         if not visible:
             return cls.objects.none()
 
-        now = timezone.now()
-        return (
-            cls.objects.filter(
-                Q(visibility__in=visible) | Q(visibility="creator", creator_id=user.pk),
-                publish_start__lte=now,
-            )
-            .filter(Q(publish_end__isnull=True) | Q(publish_end__gt=now))
-            .exclude(pk__in=excluded_pks)
-            .exclude(dismissals__user_id=user.pk)
-        )
+        return base_qs.filter(
+            Q(visibility__in=visible) | Q(visibility="creator", creator_id=user.pk)
+        ).exclude(dismissals__user_id=user.pk)
